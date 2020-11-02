@@ -13,8 +13,8 @@ namespace WebAPI.Models
             SqlConnectionStringBuilder connString = new SqlConnectionStringBuilder();
             connString.UserID = "sa";
             connString.Password = "Technology3";
-            connString.DataSource = "l2.kaje.ucnit20.eu";
-            connString.IntegratedSecurity = false; // if true then windows authentication
+            connString.DataSource = "localhost";
+            connString.IntegratedSecurity = true; // if true then windows authentication
             connString.InitialCatalog = "Corona";
             List<Datum> theReply = new List<Datum>();
             using (SqlConnection connDB = new SqlConnection(connString.ConnectionString))
@@ -29,7 +29,7 @@ namespace WebAPI.Models
                         int index = 0;
                         Datum newData = new Datum();
                         newData.countrycode = reader.GetString(index++);
-                        newData.date = reader.GetDateTime(index++).ToString();
+                        newData.date = reader.GetDateTime(index++);
                         newData.cases = reader.GetInt32(index++).ToString();
                         newData.deaths = reader.GetInt32(index++).ToString();
                         newData.recovered = reader.GetInt32(index++).ToString();
@@ -45,6 +45,31 @@ namespace WebAPI.Models
 
             }
             return (theReply);
+        }
+        public int InsertRecord(string sqlQuery)
+        {
+            SqlConnectionStringBuilder connString = new SqlConnectionStringBuilder();
+            connString.UserID = "sa";
+            connString.Password = "Technology3";
+            connString.DataSource = "localhost";
+            connString.IntegratedSecurity = true; // if true then windows authentication
+            connString.InitialCatalog = "Corona";
+            using (SqlConnection connDB = new SqlConnection(connString.ConnectionString))
+            {
+                try
+                {
+                    connDB.Open();
+                    var sqlCmd = new SqlCommand(sqlQuery, connDB);
+                    var reader = sqlCmd.ExecuteNonQuery();
+                    connDB.Close();
+                    return reader;
+                }
+                catch (SqlException ex)
+                {
+                    throw ex;
+                }
+
+            }
         }
     }
 }

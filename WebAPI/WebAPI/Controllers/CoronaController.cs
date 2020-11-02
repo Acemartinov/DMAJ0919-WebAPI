@@ -29,10 +29,20 @@ namespace WebAPI.Controllers
         {
             return "value";
         }
-
+        
         // POST: api/Corona
-        public void Post([FromBody]string value)
+        public HttpResponseMessage Post([FromBody]Datum newEntry)
         {
+            CoronaOperations coop = new CoronaOperations();
+            int x = coop.InsertRecord(string.Format("INSERT INTO theStats(countrycode, date, cases, deaths, recovered) VALUES('{0}','{1}','{2}','{3}','{4}')", newEntry.countrycode, newEntry.date, newEntry.cases, newEntry.deaths, newEntry.recovered));
+            if (x == 1)
+            {
+                return new HttpResponseMessage(HttpStatusCode.OK);
+            } else
+            {
+                return new HttpResponseMessage(HttpStatusCode.Conflict);
+            }
+            
         }
 
         // PUT: api/Corona/5
